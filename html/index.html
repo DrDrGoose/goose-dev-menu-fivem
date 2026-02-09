@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gooses-Menü</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <style>
+    :root {
+      --bg-glass: rgba(15, 23, 42, 0.85);
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-light: rgba(255, 255, 255, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+
+    body {
+      display: none;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text-main);
+      justify-content: flex-end;
+      align-items: flex-start;
+      padding: 2rem;
+      background-color: transparent !important;
+      left: 10%;
+    }
+
+    .menu {
+      background: var(--bg-glass);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      width: 380px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .top {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .top h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .top p {
+      margin: 0;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: monospace;
+      background: rgba(255,255,255,0.05);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .button {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid transparent;
+      color: var(--text-main);
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-align: left;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      position: relative;
+      gap: 10px;
+    }
+
+    .button:hover { background: rgba(255,255,255,0.08); padding-left: 1.25rem; }
+    .button:active, .button.active { background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.3); color: #fff; }
+
+    .button.btn-solid { background: rgba(99,102,241,0.25); border-color: rgba(99,102,241,0.35); }
+    .button.btn-danger { background: rgba(239,68,68,0.16); border-color: rgba(239,68,68,0.22); }
+    .button.btn-mini { padding: 0.55rem 0.8rem; margin: 0; justify-content: center; }
+
+    .submenu { display: none; flex-direction: column; margin: 0.25rem 0 1rem 0; padding: 0.75rem; padding-top: 0; }
+    .subsubmenu { margin-top: 0.5rem; border: none; }
+    .button.active + .submenu { display: flex; }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+
+    label { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    input, select {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-light);
+      background: rgba(15,23,42,0.6);
+      color: #fff;
+      outline: none;
+      font-size: 0.9rem;
+    }
+
+    .inline-center {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: rgba(0,0,0,0.2);
+      padding: 6px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .value-pill {
+      flex-grow: 1;
+      text-align: center;
+      font-family: monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .split-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .divider { width: 100%; height: 1px; background: var(--border-light); margin: 14px 0; }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 16px;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 700;
+      display: none;
+      z-index: 100;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #noclipOverlay{
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: linear-gradient(180deg, rgba(75,75,75,0.9), rgba(58,163,158,0.8));
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      color: #fff;
+      padding: 0.75rem 1.2rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      z-index: 99999;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div id="noclipOverlay" style="display:none;">😶‍🌫️ NoClip aktiv</div>
+
+
+  <div class="menu">
+    <div class="top">
+      <h2>Gooses-Menü</h2>
+      <p>v1.6</p>
+    </div>
+
+    <button class="button" id="serverSubmenuButton" onclick="toggleSubmenu('serverSubmenu', 'serverSubmenuButton')">
+      <i class="bi bi-hdd-network"></i> <span>Server Menü</span>
+    </button>
+
+    <div id="serverSubmenu" class="submenu">
+
+      <button class="button" id="clientTimeSubmenuButton" onclick="toggleSubmenu('clientTimeSubmenu', 'clientTimeSubmenuButton')">
+        <i class="bi bi-cloud-sun"></i> Zeit / Wetter
+      </button>
+
+      <div id="clientTimeSubmenu" class="submenu subsubmenu">
+        <div class="inline-center">
+          <button class="button btn-mini" onclick="changeHour(-1)"><i class="bi bi-chevron-left"></i></button>
+          <span class="value-pill" id="clientTimeLabel"><i class="bi bi-clock"></i> 12</span>
+          <button class="button btn-mini" onclick="changeHour(1)"><i class="bi bi-chevron-right"></i></button>
+        </div>
+
+        <div class="inline-center">
+          <button class="button btn-mini" onclick="changeWeather(-1)"><i class="bi bi-chevron-left"></i></button>
+          <span class="value-pill" id="clientWeatherLabel">CLEAR</span>
+          <button class="button btn-mini" onclick="changeWeather(1)"><i class="bi bi-chevron-right"></i></button>
+        </div>
+      </div>
+
+      <button class="button" id="worldSubmenuButton" onclick="toggleSubmenu('worldSubmenu', 'worldSubmenuButton')">
+        <i class="bi bi-globe2"></i> Welt
+      </button>
+
+      <div id="worldSubmenu" class="submenu subsubmenu">
+        <div class="field">
+          <label>KI Verkehr</label>
+          <select id="trafficSelect" onchange="onTrafficChanged()">
+            <option value="on">An</option>
+            <option value="off">Aus</option>
+          </select>
+        </div>
+
+        <div class="field" style="margin-top:10px;">
+          <label>Polizei / Wanted</label>
+          <select id="policeSelect" onchange="onPoliceChanged()">
+            <option value="on">An</option>
+            <option value="off">Aus</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="button" id="spawnSubmenuButton" onclick="toggleSubmenu('spawnSubmenu', 'spawnSubmenuButton')">
+        <i class="bi bi-person-bounding-box"></i> Spawn / Teleport
+      </button>
+
+      <div id="spawnSubmenu" class="submenu subsubmenu">
+        <div class="field">
+          <label>Spawnpunkt</label>
+          <select id="spawnPreset">
+            <option value="-1037.6,-2738.0,20.2,330.0">LS Airport (LSIA)</option>
+            <option value="215.8,-810.1,30.7,157.0">Legion Square</option>
+            <option value="1700.0,3280.0,41.1,195.0">Sandy Shores</option>
+            <option value="-215.0,6218.0,31.5,320.0">Paleto Bay</option>
+          </select>
+        </div>
+
+        <button class="button btn-solid" style="justify-content:center; margin-top:10px;" onclick="spawnPreset()">
+          <i class="bi bi-geo-alt-fill"></i> Teleportieren
+        </button>
+      </div>
+
+      <button class="button" onclick="giveAllWeapons()">
+        <i class="bi bi-crosshair"></i> Alle Waffen
+      </button>
+
+      <button class="button" onclick="getPlayerCoords()">
+        <i class="bi bi-geo-alt-fill"></i> Position (F8)
+      </button>
+
+      <div class="subsubmenu" style="margin-top:10px;">
+        <div class="field">
+          <label>Letzte Position speichern</label>
+          <select id="persistLastPosSelect" onchange="onPersistLastPosChanged()">
+            <option value="on">An</option>
+            <option value="off">Aus</option>
+          </select>
+        </div>
+
+        <div class="split-actions" style="margin-top:10px;">
+          <button class="button btn-solid" onclick="saveLastPosNow()">
+            <i class="bi bi-save2"></i> Jetzt speichern
+          </button>
+          <button class="button" onclick="clearLastPosLocal()">
+            <i class="bi bi-x-circle"></i> Ausschalten
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="button" id="carControlSubmenuButton" onclick="toggleSubmenu('carControlSubmenu', 'carControlSubmenuButton')">
+      <i class="bi bi-car-front-fill"></i> <span>Auto Menü</span>
+    </button>
+
+    <div id="carControlSubmenu" class="submenu">
+      <button class="button" id="vehSubmenuButton" onclick="toggleSubmenu('vehSubmenu', 'vehSubmenuButton')">
+        <i class="bi bi-plus-circle"></i> Fahrzeug Spawnen
+      </button>
+
+      <div id="vehSubmenu" class="submenu subsubmenu">
+        <div class="field">
+          <label>Fahrzeugname</label>
+          <div class="inline-center" style="background: transparent; padding:0; margin:0;">
+            <input type="text" id="vehicleInput" placeholder="z.B. adder" style="margin-right: 5px;" />
+            <button class="button btn-mini" onclick="spawnCustomVehicle()"><i class="bi bi-check-lg"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <button class="button" onclick="repairVehicle()">
+        <i class="bi bi-wrench-adjustable"></i> Fahrzeug reparieren
+      </button>
+
+      <button class="button" id="doorsSubmenuButton" onclick="toggleSubmenu('doorsSubmenu', 'doorsSubmenuButton')">
+        <i class="bi bi-door-open-fill"></i> Türen
+      </button>
+
+      <div id="doorsSubmenu" class="submenu subsubmenu">
+        <div class="row">
+          <button class="button btn-mini" onclick="toggleDoor(0)">VL</button>
+          <button class="button btn-mini" onclick="toggleDoor(1)">VR</button>
+          <button class="button btn-mini" onclick="toggleDoor(2)">HL</button>
+          <button class="button btn-mini" onclick="toggleDoor(3)">HR</button>
+        </div>
+        <div class="row">
+          <button class="button btn-mini" onclick="toggleDoor(4)">Motor</button>
+          <button class="button btn-mini" onclick="toggleDoor(5)">Koffer</button>
+        </div>
+      </div>
+
+      <button class="button" id="seatsSubmenuButton" onclick="toggleSubmenu('seatsSubmenu', 'seatsSubmenuButton')">
+        <i class="bi bi-person-workspace"></i> Sitze
+      </button>
+
+      <div id="seatsSubmenu" class="submenu subsubmenu">
+        <div class="row">
+          <button class="button btn-mini" onclick="toggleSeat(-1)">Fahrer</button>
+          <button class="button btn-mini" onclick="toggleSeat(0)">Beif.</button>
+        </div>
+        <div class="row">
+          <button class="button btn-mini" onclick="toggleSeat(1)">Hi L</button>
+          <button class="button btn-mini" onclick="toggleSeat(2)">Hi R</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="button" id="clothesSubmenuButton" onclick="toggleSubmenu('clothesSubmenu', 'clothesSubmenuButton')">
+      <i class="bi bi-person-lines-fill"></i> <span>Klamotten</span>
+    </button>
+
+    <div id="clothesSubmenu" class="submenu">
+      <div class="subsubmenu">
+
+        <div class="field">
+          <label>Freemode Model</label>
+          <select id="freemodeGender" style="margin-bottom: 6px;">
+            <option value="male">Male (mp_m_freemode_01)</option>
+            <option value="female">Female (mp_f_freemode_01)</option>
+          </select>
+
+          <button class="button btn-solid" onclick="applyFreemode()" style="justify-content:center;">
+            <i class="bi bi-arrow-repeat"></i> Model wechseln
+          </button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="row">
+          <div class="field">
+            <label>Typ</label>
+            <select id="dlcType" onchange="onTypeChange()">
+              <option value="clothes">Clothes</option>
+              <option value="prop">Prop</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Slot</label>
+            <select id="dlcComponentSelect"></select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Drawable</label>
+            <input id="dlcDrawable" type="number" min="-1" value="0" />
+          </div>
+          <div class="field">
+            <label>Texture</label>
+            <input id="dlcTexture" type="number" min="0" value="0" />
+          </div>
+        </div>
+
+        <div class="row" id="paletteRow">
+          <div class="field">
+            <label>Palette</label>
+            <input id="dlcPalette" type="number" min="0" value="0" />
+          </div>
+          <div class="field" style="justify-content:flex-end;">
+            <button class="button btn-solid" onclick="applyDlc()" style="margin:0; height:100%; justify-content:center;">
+              <i class="bi bi-check2-circle"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="row" id="applyOnlyRow" style="display:none;">
+          <div class="field" style="grid-column:1 / span 2;">
+            <button class="button btn-solid" onclick="applyDlc()" style="justify-content:center;">
+              <i class="bi bi-check2-circle"></i> Anwenden
+            </button>
+          </div>
+        </div>
+
+        <div class="split-actions">
+          <button class="button btn-danger" onclick="resetClothes()">
+            <i class="bi bi-x-octagon"></i> Klamotten reset
+          </button>
+          <button class="button" onclick="clearClothesInputs()">
+            <i class="bi bi-eraser-fill"></i> Eingaben leeren
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast">
+    <i class="bi bi-check-circle-fill"></i> <span id="toastMessage">Aktion erfolgreich</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "noclip": {
+    "teleportToGroundOnExit": true
+  },
+  "spawn": {
+    "x": 0,
+    "y": 0,
+    "z": 72,
+    "h": 0
+  },
+  "world": {
+    "trafficEnabledDefault": false,
+    "policeEnabledDefault": false
+  }
+}
