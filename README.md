@@ -1,6 +1,6 @@
 # Goose Dev Menü 🦢 (FiveM)
 
-**Version 1.5 – 30.01.2026**
+**Version 1.0 – 09.02.2026**
 
 Modernes Dev-Menü für **FiveM** mit Blur-UI, NoClip, Waffen/Repair-Hotkeys, Fahrzeug-Tools, Zeit/Wetter, Klamotten-Tester und optionaler Positionsspeicherung (Reconnect).
 
@@ -156,3 +156,4 @@ Beispiel:
 ---
 
 Viel Spaß mit **Goose Dev Menü** 🦢
+
