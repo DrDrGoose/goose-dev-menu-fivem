@@ -1,421 +1,158 @@
+# Goose Dev Menü 🦢 (FiveM)
 
-# Goose DevMenu (FiveM) — Modernes Dev-/Admin-Menü
+**Version 1.5 – 30.01.2026**
 
-  
-
-Ein schlankes Dev-Menü für **FiveM**, gedacht für **Test- & Entwicklungsserver**.
-
-Es ersetzt klassische “Freeroam”-Funktionen nicht komplett, sondern bietet dir ein zentrales UI mit praktischen Tools wie:
-
-  
-
-- ✅ Menü per **F4** öffnen/schließen
-
-- ✅ NoClip per **F3** (inkl. HUD/Overlay via NUI-Message)
-
-- ✅ Alle Waffen geben (**F9** / Command)
-
-- ✅ Fahrzeug reparieren (**F10** / Command)
-
-- ✅ Fahrzeug spawnen + Türen/Sitze steuern
-
-- ✅ Zeit/Weather clientseitig setzen
-
-- ✅ Kleidung (Freemode) anpassen
-
-- ✅ Welt-Optionen (KI-Verkehr / Polizei)
-
-- ✅ Last-Position speichern (serverseitig in `lastpos.json`)
-
-  
-
-> ⚠️ **Hinweis:** Dieses Menü ist für Dev-/Admin-Zwecke gedacht. Nicht auf öffentlichen Servern ohne Berechtigungssystem verwenden.
-
-  
+Modernes Dev-Menü für **FiveM** mit Blur-UI, NoClip, Waffen/Repair-Hotkeys, Fahrzeug-Tools, Zeit/Wetter, Klamotten-Tester und optionaler Positionsspeicherung (Reconnect).
 
 ---
 
-  
+## ⚙️ Installation
 
-## Voraussetzungen
+1) Resource-Ordner in deinen `resources/` Ordner legen (z. B. `resources/[dev]/goose_devmenu`)
 
-  
-
-- FiveM Server (FXServer) mit aktivem NodeJS (Standard)
-
-- Eine Resource-Ordnerstruktur wie unten beschrieben
-
-- Admin-ACE Rechte für dein Identifier (siehe Setup)
-
-  
-
----
-
-  
-
-## Installation
-
-  
-
-### 1) Resource ablegen
-
-Lege den Ordner `goose_devmenu` in deinen `resources/` Ordner.
-
-  
-
-Beispiel:
-
-  
-
-```text
-
-resources/
-
- - goose_devmenu/
- -- fxmanifest.lua
- -- config.json
- -- client/
- --- client.js
- --- noclip.js
- -- server/
- --- server.js
- -- html/
- --- index.html
- --- script.js
-```
-
-
----
-
-  
-
-### 2) `server.cfg` anpassen
-
-Füge die Resource hinzu:
-
-  
-
+2) In deiner `server.cfg` starten:
 ```cfg
-
 ensure goose_devmenu
-
 ```
 
-  
-
-Gib dir selbst Rechte:
-
-  
-
+3) In deiner `server.cfg` **entfernen**:
 ```cfg
+ensure spawnmanager
+ensure basic-gamemode
+```
 
-add_principal identifier.fivem:DEINEID group.admin
-
+4) **ACE Permission** setzen (nur Admins dürfen das Menü nutzen):
+```cfg
 add_ace group.admin goose.dev allow
-
+add_principal identifier.fivem:DEINE_ID group.admin
 ```
 
-  
-
-> Ersetze `DEINEID` durch deine FiveM-ID (z.B. `identifier.fivem:XXXXXX`).
-
-  
+> Tipp: Deine FiveM-ID findest du im Client/Server-Log als `identifier.fivem:...`.
 
 ---
 
-  
+## 🧩 Funktionen
 
-### 3) `fxmanifest.lua` prüfen
+### 🗺️ Spawn / Reconnect Position (optional)
+- **Letzte Position speichern** (per Menü aktivierbar)
+- Position wird regelmäßig gespeichert und beim Reconnect wiederhergestellt
+- Speicherung in: `lastpos.json` (im Resource-Ordner)
 
-  
+### 🚗 Fahrzeuge
+- Fahrzeug spawnen per Texteingabe
+- Türen öffnen/schließen einzeln
+- Sitzplatz wechseln
+- Fahrzeug reparieren (Button + Hotkey)
 
-Dein Manifest muss Client, Server und NUI korrekt laden.
+### 🕓 Zeit
+- Zeit im Menü anzeigen
+- Zeit mit ◀️/▶️ in Stundenschritten ändern (Client-seitig)
 
-  
+### 🌦️ Wetter
+- Wetter im Menü anzeigen
+- Wettertyp mit ◀️/▶️ ändern (Client-seitig)
 
-Beispiel:
+### 🔫 Waffen
+- Ein Klick → alle Waffen erhalten
+- Zusätzlich per Hotkey
 
-  
+### 😶‍🌫️ NoClip
+- Umschalten per Hotkey
+- Optional: Beim Deaktivieren auf den Boden teleportieren (Config)
 
-```lua
+### 👕 Klamotten / DLC Tester (Freemode)
+- Wechsel zwischen:
+  - `mp_m_freemode_01` (Male)
+  - `mp_f_freemode_01` (Female)
+- Components/Props setzen (Drawable/Texture)
+- Reset-Button + Auto-Reset beim Model-Wechsel
 
-fx_version  'cerulean'
-
-game  'gta5'
-
-author  'DrDrGoose'
-
-description  'Goose DevMenu'
-
-version  '1.0.0'
-
-ui_page  'html/index.html'
-
-files {
-
-'html/index.html',
-
-'html/script.js',
-
-'html/*.css',
-
-'html/*.png',
-
-'config.json'
-
-}
-
-client_scripts {
-
-'client/noclip.js',
-
-'client/client.js'
-
-}
-
-server_scripts {
-
-'server/server.js'
-
-}
-
-```
+### 🌍 Welt-Optionen
+- **KI-Verkehr** an/aus
+- **Polizei/Wanted** an/aus
 
 ---
 
-  
+## 🕹️ Hotkeys
 
-## Konfiguration (`config.json`)
-
-  
-
-Beispiel:
-
-  
-
-```json
-
-{
-
-"spawn": {
-"x": 0.0,
-"y": 0.0,
-"z": 72.0,
-"h": 0.0,
-"model": "mp_m_freemode_01"
-},
-
-"world": {
-"trafficEnabledDefault": true,
-"policeEnabledDefault": false
-},
-
-"noclip": {
-"teleportToGroundOnExit": true
-}
-
-}
-
-```
-
-  
-
-### Optionen erklärt
-
-  
-
--  `spawn`: Standard-Spawn, wenn keine LastPos vorhanden ist
-
--  `world.trafficEnabledDefault`: KI-Verkehr Standard an/aus
-
--  `world.policeEnabledDefault`: Polizei/Wanted/Dispatch Standard an/aus
-
--  `noclip.teleportToGroundOnExit`: Wenn NoClip beendet wird, wird versucht auf den Boden zu “snappen”
-
-  
-
----
-
-  
-
-## Bedienung (Hotkeys & Commands)
-
-  
-
-### Hotkeys
-
-  
-
-| Taste | Funktion |
-
+| Taste | Aktion |
+|------:|--------|
 | **F4** | Menü öffnen/schließen |
-
 | **F3** | NoClip an/aus |
-
 | **F9** | Alle Waffen geben |
-
 | **F10** | Fahrzeug reparieren |
 
-  
-
-### Commands (F8 Konsole / Chat)
-
-  
-
-| Command | Funktion |
-
-| --- | --- |
-
-| `/goosemenu` | Menü toggle |
-
-| `/goosenoclip` | NoClip toggle |
-
-| `/gooseweapons` | Alle Waffen geben |
-
-| `/gooserepair` | Repariert aktuelles Fahrzeug |
-
-  
-
-> ⚠️ **Nur mit Berechtigung** (`goose.dev`) nutzbar.
-
-  
+### 🎥 Kamera-Hinweis
+Während das Menü offen ist, werden Controls blockiert, damit die Kamera nicht weiter bewegt wird. **F4** bleibt trotzdem nutzbar, um das Menü zu schließen.
 
 ---
 
-  
+## 🚀 NoClip-Steuerung
 
-## Berechtigungssystem (ACE)
+| Taste | Aktion |
+|------:|--------|
+| **W** | Vorwärts |
+| **S** | Rückwärts |
+| **A** | Links (seitlich) |
+| **D** | Rechts (seitlich) |
+| **Leertaste** | Hoch |
+| **C** | Runter |
+| **Shift** | Schneller |
+| **Strg** | Langsamer |
 
-  
+---
 
-Das Menü prüft serverseitig:
+## 🧾 Konfiguration (`config.json`)
 
-  
-
--  `IsPlayerAceAllowed(src, "goose.dev")`
-
-  
-
-### Beispiel-Setup
-
-  
-
-```cfg
-
-add_ace group.admin goose.dev allow
-
-add_principal identifier.fivem:DEINEID group.admin
-
+Beispiel:
+```json
+{
+  "spawn": { "x": 0.0, "y": 0.0, "z": 72.0, "h": 0.0, "model": "mp_m_freemode_01" },
+  "world": { "trafficEnabledDefault": true, "policeEnabledDefault": false },
+  "noclip": { "teleportToGroundOnExit": true }
+}
 ```
 
-  
-
-Wenn du willst, kannst du auch direkt einem Identifier die Permission geben:
-
-  
-
-```cfg
-
-add_ace identifier.fivem:DEINEID goose.dev allow
-
-```
-
-  
+- `spawn`: Default-Spawnpunkt, falls keine LastPos gesetzt ist
+- `world.trafficEnabledDefault`: KI-Verkehr standardmäßig aktiv?
+- `world.policeEnabledDefault`: Polizei/Wanted standardmäßig aktiv?
+- `noclip.teleportToGroundOnExit`: Beim NoClip-Off auf Boden setzen
 
 ---
 
-  
+## 📁 Struktur (Resource)
 
-## Last Position (`lastpos.json`)
-
-  
-
-Wenn LastPos aktiviert wird, speichert der Server die letzte Position in:
-
-  
-
-```text
-
-goose_devmenu/lastpos.json
-
-```
-
-  
-
-### Funktionsweise
-
-  
-
-- Client sendet Koordinaten (alle 10s), wenn aktiviert
-
-- Server speichert pro Spieler anhand `license:` / `fivem:` / Fallback `src:ID`
+- `fxmanifest.lua`  
+  Resource-Manifest
+- `client/client.js`  
+  Menülogik, NUI-Callbacks, Zeit/Wetter, Welt-Optionen, Spawn
+- `client/noclip.js`  
+  NoClip-Logik (Kamera-Relativ, Speed-Stufen, Ground-Teleport optional)
+- `server/server.js`  
+  Auth (ACE), Init/Defaults, LastPos speichern (`lastpos.json`)
+- `html/index.html`  
+  UI (Blur-Menü)
+- `html/script.js`  
+  UI-Frontend-Logik (NUI Messages + Fetch zu Client)
 
 ---
 
-  
+## 🔌 Kommunikation
 
-## Troubleshooting
-
-  
-
-### „Awaiting scripts“ beim Join
-
-  
-
-- Stelle sicher, dass keine Fehler in F8 Konsole auftreten
-
-- Spawn/Model-Änderungen dürfen erst erfolgen, wenn die Network-Session bereit ist
-
-- Prüfe, ob `client.js` und `server.js` sauber getrennt sind
-
--  `fxmanifest.lua` Pfade prüfen
-
-  
-
-### Menü lässt sich nicht mit F4 schließen
-
-  
-
-Schließe das Menü über  `ESC`
+- **NUI → Client**: `fetch("https://<resource>/<callback>", ...)` / `__cfx_nui:*`
+- **Client → NUI**: `SendNUIMessage({ type: "...", ... })`
+- **Client ↔ Server**: `emitNet(...)` / `onNet(...)`
 
 ---
 
-  
+## 💾 Speicherung
 
-## Sicherheit / Hinweise
+### Serverseitig
+- LastPos (wenn aktiviert) in `lastpos.json`
 
-  
-
-- Nicht für Live-Server ohne zusätzliche Rechte-/Logik
-
-- Waffen-/Repair-/Spawn-Funktionen sind dev-only
-
-- Wir empfehlen, die Resource nur für Admins zu starten
-
-  
+### Client/UI
+- UI-Eingaben bleiben erhalten, bis sie manuell geändert/zurückgesetzt werden.
 
 ---
 
-  
-
-## Credits
-
-  
-
-- UI/DevMenu: DrDrGoose
-
-- Anpassungen/Fehlerfixes: Community / eigene Weiterentwicklung
-
-  
-
----
-
-  
-
-## Lizenz
-
-  
-
-Private/Dev-Nutzung frei (je nach Repo/Projekt).
-
-Wenn du es öffentlich teilst, setze bitte Credits und prüfe die Lizenzbedingungen deines ursprünglichen Repos.
+Viel Spaß mit **Goose Dev Menü** 🦢
